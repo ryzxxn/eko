@@ -26,7 +26,7 @@ feel free to add your own
 - modify the webhook url with your own url
 - run script 
 - 'send me a joke about computers on discord'
-you could in theory have it send a specific message to a specific webhook url as well
+you could in theory have it send a specific message to a specific webhook url as well, after modify the function to accept a url in it's argument instead of hard coding it in its function
 (you can pass the args in the query and the llm should handle it )
 
 ## webscrape using a url
