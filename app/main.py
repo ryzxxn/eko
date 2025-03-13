@@ -12,7 +12,7 @@ def main():
 
     while True:
         # Allow user to input query
-        query = input("Enter your query (or type 'exit' to quit): ")
+        query = input(":|>")
 
         if query.lower() == 'exit':
             print("Exiting...")
