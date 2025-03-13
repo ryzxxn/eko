@@ -2,33 +2,37 @@ import importlib.util
 import os
 from core.eko_core import load_tools, execute_function
 from core.llm.groq_llm import llm_groq
-from alive_progress import alive_bar #type: ignore
+from alive_progress import alive_bar  # type: ignore
 import time
 import inspect
-
 
 def main():
     available_tools = load_tools()
     # print("Loaded tools:", available_tools)
 
-    # Allow user to input query
-    query = input("Enter your query: ")
+    while True:
+        # Allow user to input query
+        query = input("Enter your query (or type 'exit' to quit): ")
 
-    # Simulate processing with a spinner
-    with alive_bar(title="Processing query") as bar:
-        bar()
+        if query.lower() == 'exit':
+            print("Exiting...")
+            break  # Exit the loop if the user types 'exit'
 
-    response = llm_groq(model="llama-3.3-70b-versatile", query=query, tools=available_tools)
+        # Simulate processing with a spinner
+        with alive_bar(title="Processing query") as bar:
+            bar()
 
-    print("LLM Response:", response)
+        response = llm_groq(model="llama-3.3-70b-versatile", query=query, tools=available_tools)
 
-    # Extract the function name and parameters from the response
-    function_name = response['function_name']
-    parameters = response['function_args']
+        print("LLM Response:", response)
 
-    # Execute the function with the provided parameters
-    result = execute_function(available_tools, function_name, parameters)
-    print(result)
+        # Extract the function name and parameters from the response
+        function_name = response['function_name']
+        parameters = response['function_args']
+
+        # Execute the function with the provided parameters
+        result = execute_function(available_tools, function_name, parameters)
+        print("Function Result:", result)
 
 if __name__ == "__main__":
     main()
