@@ -1,7 +1,7 @@
 import requests #type: ignore
 import json
 
-def send_to_discord(*, url: str, message: str):
+def send_to_discord(*, webhook_url: str, message: str):
     """
     Send a message to a Discord channel using a webhook URL.
 
@@ -19,7 +19,7 @@ def send_to_discord(*, url: str, message: str):
         'content': message
     }
 
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    response = requests.post(webhook_url, headers=headers, data=json.dumps(data))
 
     if response.status_code == 204:
         print("Message sent successfully.")

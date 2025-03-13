@@ -8,7 +8,7 @@ import inspect
 
 def main():
     available_tools = load_tools()
-    # print("Loaded tools:", available_tools)
+    print("Loaded tools:", available_tools)
 
     while True:
         # Allow user to input query
@@ -25,14 +25,18 @@ def main():
         response = llm_groq(model="llama-3.3-70b-versatile", query=query, tools=available_tools)
 
         print("LLM Response:", response)
+        print("Response Type:", type(response))
 
-        # Extract the function name and parameters from the response
-        function_name = response['function_name']
-        parameters = response['function_args']
+        # Check if response is a dictionary and contains required keys
+        if isinstance(response, dict) and 'function_name' in response and 'function_args' in response:
+            function_name = response['function_name']
+            parameters = response['function_args']
 
-        # Execute the function with the provided parameters
-        result = execute_function(available_tools, function_name, parameters)
-        print("Function Result:", result)
+            # Execute the function with the provided parameters
+            result = execute_function(available_tools, function_name, parameters)
+            print("Function Result:", result)
+        else:
+            print("Error: Invalid response structure")
 
 if __name__ == "__main__":
     main()
