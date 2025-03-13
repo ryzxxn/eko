@@ -8,7 +8,7 @@ import inspect
 
 def main():
     available_tools = load_tools()
-    print("Loaded tools:", available_tools)
+    # print("Loaded tools:", available_tools)
 
     while True:
         # Allow user to input query

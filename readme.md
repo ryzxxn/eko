@@ -28,11 +28,14 @@ feel free to add your own
 - 'send me a joke about computers on discord'
 you could in theory have it send a specific message to a specific webhook url as well, after modify the function to accept a url in it's argument instead of hard coding it in its function
 (you can pass the args in the query and the llm should handle it )
+- you can specify the args in the query like path="examplepath" ... etc.
 
 ## webscrape using a url
 ### usage
 - run script 
-- 'webscrape https://en.wikipedia.org/wiki/Star_Wars'
+- webscrape https://en.wikipedia.org/wiki/Star_Wars
+- or
+- search for GTA6
 
 ## execute a js file
 ### usage
