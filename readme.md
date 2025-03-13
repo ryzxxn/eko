@@ -33,3 +33,8 @@ you could in theory have it send a specific message to a specific webhook url as
 ### usage
 - run script 
 - 'webscrape https://en.wikipedia.org/wiki/Star_Wars'
+
+## execute a js file
+### usage
+- run script 
+- 'execute the script.js file in root dir'

@@ -1,5 +1,7 @@
-import requests
-from bs4 import BeautifulSoup
+import requests #type:ignore
+from bs4 import BeautifulSoup #type:ignore
+
+from core.utils.text import clean_html #type:ignore
 
 def scrape_wikipedia(url):
     """
@@ -19,6 +21,7 @@ def scrape_wikipedia(url):
     # Check if the request was successful
     if response.status_code != 200:
         raise Exception(f"Failed to load page {url}")
+    
+    cleaned_text = clean_html(response.content)
 
-    return response.content
-
+    return cleaned_text

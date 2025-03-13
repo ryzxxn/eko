@@ -20,3 +20,31 @@ def load_tools():
                     # Store the function and its signature
                     tools[attr_name] = {'function': attr, 'signature': sig}
     return tools
+
+def execute_function(tools, function_name, parameters=None):
+    """
+    Execute a function with the given parameters.
+
+    Parameters:
+    - tools: dict : A dictionary of available functions with their signatures.
+    - function_name: str : The name of the function to execute.
+    - parameters: dict : The parameters to pass to the function. Defaults to None.
+
+    Returns:
+    - The result of the function execution.
+    """
+    if function_name in tools:
+        function_info = tools[function_name]
+        function = function_info['function']
+        sig = function_info['signature']
+
+        if parameters is None:
+            parameters = {}
+
+        # Bind the provided parameters to the function's signature
+        bound_args = sig.bind_partial(**parameters)
+        bound_args.apply_defaults()
+
+        return function(*bound_args.args, **bound_args.kwargs)
+    else:
+        raise ValueError(f"Function {function_name} not found in available tools.")
