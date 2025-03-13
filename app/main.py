@@ -8,11 +8,15 @@ import inspect
 
 def main():
     available_tools = load_tools()
-    # print("Loaded tools:", available_tools)
+
+     # Print the list of available tools
+    print("Available Tools:")
+    for tool_name, tool_info in available_tools.items():
+        print(f"- {tool_name}: {tool_info['signature']}")
 
     while True:
         # Allow user to input query
-        query = input(":|>")
+        query = input("​𝘼𝙂𝙀𝙉𝙏 𝙀𝙆𝙊:>")
 
         if query.lower() == 'exit':
             print("Exiting...")
@@ -22,10 +26,9 @@ def main():
         with alive_bar(title="Processing query") as bar:
             bar()
 
-        response = llm_groq(model="llama-3.3-70b-versatile", query=query, tools=available_tools)
+        response = llm_groq(model="llama3-70b-8192", query=query, tools=available_tools)
 
-        # print("LLM Response:", response)
-        # print("Response Type:", type(response))
+        print(response)
 
         # Check if response is a dictionary and contains required keys
         if isinstance(response, dict) and 'function_name' in response and 'function_args' in response:
@@ -34,9 +37,7 @@ def main():
 
             # Execute the function with the provided parameters
             result = execute_function(available_tools, function_name, parameters)
-            print("SYSTEM:: ", result)
-        # else:
-        #     print("Error: Invalid response structure")
+            print("​𝘼𝙂𝙀𝙉𝙏 𝙀𝙆𝙊:> ", result)
 
 if __name__ == "__main__":
     main()

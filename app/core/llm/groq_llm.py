@@ -1,3 +1,4 @@
+import email
 import json
 from groq import Groq  # type:ignore
 import os
@@ -9,9 +10,14 @@ import inspect
 
 load_dotenv()
 
+class credentials(BaseModel):
+    email:str
+    password:str
+    phonenumber:str
+
 class FunctionResponse(BaseModel):
     function_name: str
-    function_args: dict[str, str | int | float]  # Use a dictionary for named arguments
+    function_args: dict[str, str | int | float | credentials]  # Use a dictionary for named arguments
 
 def llm_groq(model: str, query: str, tools: dict):
     """
@@ -29,7 +35,7 @@ def llm_groq(model: str, query: str, tools: dict):
 
     # Include available functions in the system message
     functions_description = "\n".join([f"{name}: {func['function'].__doc__}" for name, func in tools.items()])
-    system_message = f"You are a helpful assistant. You have access to the following functions:\n{functions_description}"
+    system_message = f"You are a agent. You have access to the following functions and parameters associated with the functions, use this informations to return a response with the correct keys for that functions.:\n{functions_description}"
 
     chat_completion: FunctionResponse = client.chat.completions.create(
         messages=[
