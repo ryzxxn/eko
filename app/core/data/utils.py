@@ -1,20 +1,6 @@
 import re
 
-def clean_html(raw_html):
-    """
-    Remove HTML tags, unnecessary line breaks, blank spaces, specific patterns:
-    - Words or sequences that start with a dot followed by word characters and dashes (e.g., .word-word-word).
-    - Malformed or incomplete HTML tags.
-    - Remove all HTML tags, including span, ul, ol, li, class, style, and any other unwanted tags.
-    - Remove any extra characters like '<', '>', or malformed content.
-
-    Parameters:
-    raw_html (str or bytes): The raw HTML string or bytes to clean.
-
-    Returns:
-    str: The cleaned text without HTML tags, unnecessary line breaks, blank spaces,
-         words starting with a dot followed by dashes, malformed HTML tags, and extraneous '>' characters.
-    """
+def clean_html(raw_html:str):
     if isinstance(raw_html, bytes):
         raw_html = raw_html.decode('utf-8')  # Decode bytes to string
 

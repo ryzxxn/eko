@@ -1,7 +1,6 @@
 [project]
 name = "eko"
 version = "0.1.0"
-package-mode = false
 description = ""
 authors = [
     {name = "Elton Costa",email = "89019551+ryzxxn@users.noreply.github.com"}
@@ -9,22 +8,7 @@ authors = [
 readme = "README.md"
 requires-python = "^3.10"
 dependencies = [
-    "pyautogui (>=0.9.54,<0.10.0)",
-    "uvicorn (>=0.34.0,<0.35.0)",
-    "groq (>=0.18.0,<0.19.0)",
-    "dotenv (>=0.9.9,<0.10.0)",
-    "psutils (>=3.3.9,<4.0.0)",
-    "psutil (>=7.0.0,<8.0.0)",
-    "pydantic (>=2.10.6,<3.0.0)",
-    "instructor (>=1.7.3,<2.0.0)",
-    "requests (>=2.32.3,<3.0.0)",
-    "fastrtc[stt,tts,vad] (>=0.0.14,<0.0.15)",
-    "alive-progress (>=3.2.0,<4.0.0)",
-    "mss (>=10.0.0,<11.0.0)",
-    "pillow (>=11.1.0,<12.0.0)",
-    "beautifulsoup4 (>=4.13.3,<5.0.0)",
-    "selenium (>=4.29.0,<5.0.0)",
-    "webdriver-manager (>=4.0.2,<5.0.0)"
+    "groq (>=0.19.0,<0.20.0)"
 ]
 
 
