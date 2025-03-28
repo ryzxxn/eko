@@ -1,12 +1,24 @@
-from chroma.client import Chroma_Client
-from chroma.utils import ef, chunker
-import uuid
+import chromadb  # type: ignore
+from chromadb.utils import embedding_functions  # type: ignore
+from chroma.utils import ef, chunker, get_ids  # type: ignore
 
-# Initialize the Chroma client
-agent_memory = Chroma_Client(persistent_path="./chroma_db", collection_name="agent")
+# Function to initialize Chroma client & collection
+def initialize_chroma_client(persistent_path: str, collection_name: str):
+    try:
+        client = chromadb.PersistentClient(path=persistent_path)
+        # Use a proper embedding function
+        embedding_fn = ef
+        collection = client.get_or_create_collection(
+            name=collection_name,
+            embedding_function=embedding_fn
+        )
+        return client, collection
+    except Exception as e:
+        print(f"Error initializing ChromaDB: {e}")
+        raise
 
-# Debug: Check if Chroma is initialized
-print(f"Chroma client initialized with path: {agent_memory}")
+# Initialize Chroma client & collection
+client, memory = initialize_chroma_client("./chroma_db", "agent")
 
 text = """
 If you're looking for random paragraphs, you've come to the right place. When a random word or a random sentence isn't quite enough, the next logical step is to find a random paragraph. We created the Random Paragraph Generator with you in mind. The process is quite simple. Choose the number of random paragraphs you'd like to see and click the button. Your chosen number of paragraphs will instantly appear.
@@ -37,44 +49,45 @@ user_id = "user123"
 agent_id = "agent123"
 
 # Chunk the text
-chunks = chunker(text=text, chunk_size=20, overlap=10)
+chunks = chunker(text=text, chunk_size=100, overlap=20)
 
 # Debug: Check chunking output
 if not chunks:
     print("Error: No chunks generated!")
     exit()
 
-print(f"Generated {len(chunks)} chunks.")
-print("Sample Chunks:", chunks[:3])  # Print first 3 chunks
+# Generate unique IDs for each chunk
+ids = get_ids(chunks)
 
 # Process & upsert chunks
 for i, chunk in enumerate(chunks):
     print(f"\nProcessing chunk {i + 1}: {chunk}")
-
-    # Generate embedding
-    embedded_text = ef(chunk)
-    if embedded_text is None:
-        print(f"Error: Embedding failed for chunk {i}")
+    
+    try:
+        # Upsert into ChromaDB (let collection handle embedding)
+        memory.add(
+            documents=[chunk],
+            metadatas=[{"user_id": user_id, "agent_id": agent_id}],
+            ids=[ids[i]]
+        )
+    except Exception as e:
+        print(f"Error processing chunk {i}: {e}")
         continue
 
-    # Generate unique ID
-    chunk_id = str(uuid.uuid4())
+# Verify insertion
+print(f"Total documents in collection: {memory.count()}")
+print("All chunks processed successfully!")
 
-    # Upsert into ChromaDB
-    agent_memory.upsert(
-        documents=[chunk],
-        metadatas=[{"user_id": user_id, "agent_id": agent_id}],
-        ids=[chunk_id],
-        embeddings=[embedded_text]
-    )
-    print(f"Upserted chunk {i + 1} with ID {chunk_id}")
 
-# Verify stored data
-stored_data = agent_memory.get(ids=[chunk_id for _ in range(len(chunks))])
+query = "Generating random paragraphs can be an excellent way for writers"
 
-# Debug: Check stored data
-if stored_data:
-    print("\n✅ Stored Data:", stored_data)
-else:
-    print("\n❌ No data found in Chroma!")
-    print("Available Collections:", agent_memory.list_collections())
+embeded_text = ef(query)
+
+results = memory.query(
+    query_embeddings=[embeded_text],
+    n_results=10,
+    where_document={"$contains":query}
+)
+
+print("Results Structure:", results["documents"])
+

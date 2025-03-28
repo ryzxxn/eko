@@ -1,5 +1,6 @@
 from chromadb.utils import embedding_functions # type: ignore
 import re
+import uuid
 
 def clean_text(text):
     # Remove newline characters and excessive whitespace
@@ -30,3 +31,7 @@ def chunker(text, chunk_size, overlap):
 
 
 ef = embedding_functions.DefaultEmbeddingFunction()
+
+def get_ids(chunks):
+    ids = [str(uuid.uuid4()) for _ in chunks]
+    return ids
