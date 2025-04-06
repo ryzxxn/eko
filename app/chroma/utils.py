@@ -15,19 +15,24 @@ def chunker(text, chunk_size, overlap):
     # Clean the text
     text = clean_text(text)
 
-    # Split the text into words
-    words = text.split()
+    # Split the text into paragraphs and sentences
+    paragraphs = text.split('\n')
+    chunks = []
 
-    # Recursive function to chunk the text by words
-    def recursive_chunk(words, chunk_size, overlap):
-        if len(words) <= chunk_size:
-            return [' '.join(words)]
-        else:
-            chunk = words[:chunk_size]
-            remaining_words = words[chunk_size - overlap:]
-            return [' '.join(chunk)] + recursive_chunk(remaining_words, chunk_size, overlap)
+    for paragraph in paragraphs:
+        sentences = paragraph.split('. ')
+        for sentence in sentences:
+            words = sentence.split()
+            while words:
+                if len(words) <= chunk_size:
+                    chunks.append(' '.join(words))
+                    break
+                else:
+                    chunk = words[:chunk_size]
+                    chunks.append(' '.join(chunk))
+                    words = words[chunk_size - overlap:]
 
-    return recursive_chunk(words, chunk_size, overlap)
+    return chunks
 
 
 ef = embedding_functions.DefaultEmbeddingFunction()
@@ -35,3 +40,32 @@ ef = embedding_functions.DefaultEmbeddingFunction()
 def get_ids(chunks):
     ids = [str(uuid.uuid4()) for _ in chunks]
     return ids
+
+def llm_prep(chunks):
+    # Initialize the cleaned text with the first chunk
+    cleaned_text = [chunks[0]]
+
+    # Iterate over the remaining chunks
+    for i in range(1, len(chunks)):
+        # Split the current chunk into words
+        current_words = chunks[i].split()
+
+        # Split the last sentence in cleaned_text into words
+        last_sentence_words = cleaned_text[-1].split()
+
+        # Find the overlap by comparing the end of the last sentence with the start of the current chunk
+        overlap_index = 0
+        for j in range(min(len(last_sentence_words), len(current_words))):
+            if last_sentence_words[-j] != current_words[j-1]:
+                break
+            overlap_index = j
+
+        # Remove the overlap from the current chunk
+        if overlap_index > 0:
+            current_words = current_words[overlap_index:]
+
+        # Add the cleaned chunk to the result
+        cleaned_text.append(' '.join(current_words))
+
+    # Join all cleaned chunks into a single string
+    return ' '.join(cleaned_text)
