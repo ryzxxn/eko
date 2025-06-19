@@ -1,5 +1,3 @@
-![Alt Text](https://i.ibb.co/KpFpbCQx/image.jpg)
-
 install the project
 # Requirements
 - Groq api Key
